@@ -1,4 +1,6 @@
 let newsList = [];
+const menus = document.querySelectorAll(".menus-button button")
+menus.forEach(menu => menu.addEventListener("click",(event) => getNewsByCategory(event)));
 
 const truncateSummary = (summary) => {
   if (!summary) {
@@ -21,6 +23,28 @@ const getLatestNews = async () => {
   render();
   console.log('data', data);
   console.log('newsList', newsList);
+};
+
+const getNewsByCategory = async (event) => {
+  const category = event.target.textContent.toLowerCase();
+  console.log("category",category);
+  const url = new URL (`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr&category=${category}`);
+  const response = await fetch(url);
+  const data = await response.json();
+  console.log("ddd",data);
+  newsList = data.articles;
+  render();
+};
+
+const getNewsByKeyword = async () => {
+  const keyword = document.getElementById("search-input").value;
+  console.log("keyword", keyword)
+  const url = new URL (`https://noona-times-be-5ca9402f90d9.herokuapp.com/top-headlines?country=kr&q=${keyword}`);
+  const response = await fetch(url);
+  const data = await response.json();
+  console.log("keyword data", data)
+  newsList = data.articles;
+  render();
 };
 
 const render = () => {
@@ -73,3 +97,7 @@ const openSearchBox = () => {
     inputArea.style.display = "inline";
   }
 };
+
+// 1. 버튼들에 클릭이벤트 주기
+// 2. 카테고리별 뉴스 가져오기
+// 3. 그 뉴스를 보여주기
